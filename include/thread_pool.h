@@ -1,6 +1,6 @@
 /*================================================================
 *   Copyright (C) 2018 . All rights reserved.
-*   
+*
 *   文件名称：te.h
 *   创 建 者：  xuboxuan
 *   创建日期：2018年03月29日
@@ -9,55 +9,47 @@
 ================================================================*/
 #ifndef _THREAD_POOL_H
 #define _THREAD_POOL_H
-#include "common.h"
-#include <pthread.h>
 #include <assert.h>
+#include <pthread.h>
 #include <queue>
-#include "config.h"
 #include "Msg.h"
+#include "common.h"
+#include "config.h"
 
-typedef struct Pool
-{
-	pthread_mutex_t queue_lock;
-	pthread_cond_t queue_ready;
-	queue<CMsg*> queue_b;
-	int shutdown = 0;
-	int max_thread_num;
-	int cur_queue_size;
+typedef struct Pool {
+  pthread_mutex_t queue_lock;
+  pthread_cond_t queue_ready;
+  queue<CMsg*> queue_b;
+  int shutdown = 0;
+  int max_thread_num;
+  int cur_queue_size;
 
-}CPool;
+} CPool;
 
+class ThreadPool {
+ public:
+  static ThreadPool* getInstance() { return m_instance; }
 
-class ThreadPool
-{
-public:
+  ~ThreadPool();
+  bool start(int max_thread_num = 1);
 
-	static ThreadPool* getInstance()
-	{
-		return m_instance;
-	}
-	
+  int pool_add_worker(void (*process)(void* arg), void* ptr);
 
-	~ThreadPool();
-	bool start(int max_thread_num=1);	
-	
-	int pool_add_worker(void(*process)(void *arg), void *ptr);
+  int pool_destory();
 
-	int pool_destory();
-	
-	CPool *pool = NULL;
-	
-private:
-	ThreadPool();
-	
-	static ThreadPool* m_instance;
-	
-	pthread_t * threadid;
-	
-	Config* pcfg = Config::get_instance();
+  CPool* pool = NULL;
+
+ private:
+  ThreadPool();
+
+  static ThreadPool* m_instance;
+
+  pthread_t* threadid;
+
+  Config* pcfg = Config::get_instance();
 };
 
-static void* thread_routine(void *arg);
+static void* thread_routine(void* arg);
 
 extern ThreadPool* T_Pool;
-#endif  /*_THREAD_POOL_H */
+#endif /*_THREAD_POOL_H */
