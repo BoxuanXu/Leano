@@ -1,8 +1,8 @@
 /*================================================================
-*   Copyright (C) 2018 Seetatech. All rights reserved.
+*   Copyright (C) 2018 xuboxuan. All rights reserved.
 *
 *   文件名称：ThreadPool.h
-*   创 建 者： seetatech & xuboxuan
+*   创 建 者： xuboxuan
 *   创建日期：2018年07月02日
 *   描    述：
 *
