@@ -74,7 +74,7 @@ class ThreadPool {
   }
 
   void pause() {
-    SEETAAS_LOG_INFO << m_threadgroup.size() << " thread be asked to pause.";
+    LEANO_LOG_INFO << m_threadgroup.size() << " thread be asked to pause.";
     //此处暂停，但是需要等待线程处理完当前param，才能进入while循环去查询是否wait,如果wait的时间在线程处理完当前param前就结束了，则线程无变化
     //所以如果每个线程刚好只分到一个参数，这部分代码并不起作用，只用于队列中参数多于线程数的情况
     for (auto thread : m_threadgroup) 
@@ -87,7 +87,7 @@ class ThreadPool {
 
   void continues() {
     //此处恢复暂停，但是需要等待线程处理完当前param，才能进入while循环去查询是否恢复,如果wait的时间在线程处理完当前param前就结束了，则线程无变化
-    SEETAAS_LOG_INFO << "Thread be asked to continues.";
+    LEANO_LOG_INFO << "Thread be asked to continues.";
     for (auto thread : m_threadgroup)  //等待线程结束
     {
       if (thread) {
@@ -113,24 +113,24 @@ class ThreadPool {
     int sig_num;
     //这段注释用于让线程只初始化，然后在此次阻塞，直到主线程调用Continue函数.
     /*
-    SEETAAS_LOG_INFO << "thread " <<  std::this_thread::get_id() << " has been init!!!";
+    LEANO_LOG_INFO << "thread " <<  std::this_thread::get_id() << " has been init!!!";
 
     sigwait(&waitsig_, &sig_num);
 
-    SEETAAS_LOG_INFO << "thread: " << std::this_thread::get_id() << " begin run.";
+    LEANO_LOG_INFO << "thread: " << std::this_thread::get_id() << " begin run.";
     */
 
     while (m_running) {
       //此处暂停，但是需要等待线程处理完当前param，才能进入while循环去查询是否wait,如果wait的时间在线程处理完当前param前就结束了，则线程无变化
       if (waitsig_debug_group[std::this_thread::get_id()]) {
-        SEETAAS_LOG_INFO << "thread " << std::this_thread::get_id() << " is waiting..."; 
+        LEANO_LOG_INFO << "thread " << std::this_thread::get_id() << " is waiting..."; 
         int ret = sigwait(&waitsig_, &sig_num);
         if (EINTR == ret) {
           continue;
         } else if (ret) {
           break;
         }
-        SEETAAS_LOG_INFO << "thread " << std::this_thread::get_id() << " finish waiting..."; 
+        LEANO_LOG_INFO << "thread " << std::this_thread::get_id() << " finish waiting..."; 
       }
       //取任务分别执行
       // std::list<Task> list;
@@ -141,7 +141,7 @@ class ThreadPool {
 
       if (!m_running) return;
 
-      SEETAAS_LOG_INFO << "thread : " << std::this_thread::get_id() << " begin process";
+      LEANO_LOG_INFO << "thread : " << std::this_thread::get_id() << " begin process";
 
       _pfun(task_param);
       /*for (auto& task : list)
@@ -155,7 +155,7 @@ class ThreadPool {
   }
 
   void StopThreadGroup() {
-    SEETAAS_LOG_INFO << "ask to terminal...";
+    LEANO_LOG_INFO << "ask to terminal...";
     m_queue.Stop();     //让同步队列中的线程停止
     m_running = false;  //置为false，让内部线程跳出循环并退出
 
