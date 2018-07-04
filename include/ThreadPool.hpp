@@ -128,6 +128,7 @@ class ThreadPool {
         if (EINTR == ret) {
           continue;
         } else if (ret) {
+          m_running = false;
           break;
         }
         LEANO_LOG_INFO << "thread " << std::this_thread::get_id() << " finish waiting..."; 
